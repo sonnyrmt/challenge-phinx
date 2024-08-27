@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 import * as fs from 'fs';
 
 export class PopulatePokemonTable1724775551263 implements MigrationInterface {
@@ -51,6 +56,57 @@ export class PopulatePokemonTable1724775551263 implements MigrationInterface {
       true,
     );
 
+    await queryRunner.createTable(
+      new Table({
+        name: 'history',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'winner',
+            type: 'integer',
+          },
+          {
+            name: 'pokemonOneId',
+            type: 'integer',
+          },
+          {
+            name: 'pokemonTwoId',
+            type: 'integer',
+          },
+          {
+            name: 'date',
+            type: 'date',
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'history',
+      new TableForeignKey({
+        columnNames: ['pokemonOneId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'pokemon',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'history',
+      new TableForeignKey({
+        columnNames: ['pokemonTwoId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'pokemon',
+        onDelete: 'CASCADE',
+      }),
+    );
+
     const pokemons = JSON.parse(
       fs.readFileSync('src/migration/pokemon.json', 'utf8'),
     ).pokemon;
@@ -74,5 +130,8 @@ export class PopulatePokemonTable1724775551263 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DELETE FROM pokemon`);
+    await queryRunner.dropForeignKey('history', 'FK_pokemonOne');
+    await queryRunner.dropForeignKey('history', 'FK_pokemonTwo');
+    await queryRunner.dropTable('history');
   }
 }

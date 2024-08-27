@@ -5,5 +5,5 @@ export const AppDataSource = new DataSource({
   database: 'database.sqlite',
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: ['dist/migration/*.js'],
-  synchronize: true,
+  synchronize: false,
 });
