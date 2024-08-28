@@ -23,21 +23,24 @@ export class PokemonsService {
 
     let [attacker, defender] = calculateFirstFighter(pokemonOne, pokemonTwo);
 
+    let turn = 1;
+
     while (attacker.hp > 0 && defender.hp > 0) {
       const damage = calculateDamage(attacker.attack, defender.defense);
 
-      const attackerClone = { ...attacker };
-      const defenderClone = { ...defender };
+      const attackerClone = { ...attacker, maxHp: pokemonOne.hp };
+      const defenderClone = { ...defender, maxHp: pokemonTwo.hp };
 
       defenderClone.hp -= damage;
 
-      const turn = {
-        attacker: attackerClone,
-        defender: defenderClone,
-        damage,
+      const turnData = {
+        [attacker.id]: attackerClone,
+        [defender.id]: defenderClone,
+        turn,
       };
 
-      simulation.push(turn);
+      turn++;
+      simulation.push(turnData);
 
       [attacker, defender] = [defenderClone, attackerClone];
     }
@@ -53,6 +56,6 @@ export class PokemonsService {
 
     await this.historyRepository.save(newHistory);
 
-    return simulation;
+    return { simulation, winner };
   }
 }

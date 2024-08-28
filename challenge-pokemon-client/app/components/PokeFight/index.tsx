@@ -1,0 +1,172 @@
+import IPokemon from "@/app/interfaces/pokemon.interface";
+import PokeCard from "../PokeCard";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid2";
+import { Button, Chip, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { api } from "@/app/services/api";
+import getRandomPokemons from "@/app/helpers/getRandomPokemons";
+
+interface Props {
+  firstPosition: IPokemon;
+  secondPosition: IPokemon;
+  isLoading: boolean;
+  allPokemons: IPokemon[];
+}
+
+interface SimulationStep {
+  [key: string]: IPokemon;
+}
+
+interface BattleResponse {
+  simulation: SimulationStep[];
+  winner: IPokemon;
+}
+
+interface PokemonState {
+  attacker: IPokemon | null;
+  defender: IPokemon | null;
+}
+
+interface BattleInfo {
+  inBattle?: boolean;
+  turn?: number;
+  winner?: IPokemon;
+}
+
+const PokeFight = ({
+  firstPosition,
+  secondPosition,
+  isLoading,
+  allPokemons,
+}: Props): any => {
+  const [battleInfo, setBattleInfo] = useState<BattleInfo>({
+    inBattle: false,
+    turn: 1,
+    winner: undefined,
+  });
+
+  const [pokemons, setPokemons] = useState<PokemonState>({
+    attacker: null,
+    defender: null,
+  });
+
+  useEffect(() => {
+    if (!isLoading) {
+      setPokemons({
+        attacker: firstPosition,
+        defender: secondPosition,
+      });
+    }
+  }, [isLoading, firstPosition]);
+
+  const handleBattleStart = async () => {
+    try {
+      const { data }: { data: BattleResponse } = await api.post("/pokemons", {
+        pokemonOne: pokemons.attacker,
+        pokemonTwo: pokemons.defender,
+      });
+
+      let battleIndex = 0;
+
+      const interval = setInterval(() => {
+        if (battleIndex < data.simulation.length) {
+          if (pokemons.attacker && pokemons.defender) {
+            const currentBattle = data.simulation[battleIndex];
+            const updatedAttacker = currentBattle[pokemons.attacker.id];
+            const updatedDefender = currentBattle[pokemons.defender.id];
+
+            setPokemons(() => ({
+              attacker: updatedAttacker,
+              defender: updatedDefender,
+            }));
+
+            setBattleInfo({
+              inBattle: true,
+              turn: battleIndex + 1,
+            });
+
+            battleIndex++;
+          }
+        } else {
+          clearInterval(interval);
+          setBattleInfo({
+            inBattle: false,
+            turn: 1,
+            winner: data.winner,
+          });
+          setPokemons(getRandomPokemons(allPokemons));
+        }
+      }, 1200);
+    } catch (error) {}
+  };
+
+  if (isLoading || !pokemons.attacker || !pokemons.defender)
+    return <>Cargando...</>;
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <Box
+        width={"100%"}
+        sx={{
+          borderRadius: 1,
+          mb: 3,
+          p: 1,
+          px: 5,
+          bgcolor: "#c4f5d1",
+        }}
+      >
+        <Typography fontSize={20}>
+          {battleInfo.winner
+            ? `${battleInfo.winner.name} wins!`
+            : "Waiting for results.."}
+        </Typography>
+      </Box>
+
+      <Grid
+        container
+        spacing={5}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <Grid minWidth={420} size={5}>
+          <PokeCard
+            withHistory={pokemons.attacker.id}
+            pokemon={pokemons.attacker}
+            statsMode
+          />
+        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {battleInfo.inBattle && (
+            <Box sx={{ mb: 2 }}>
+              <Typography>Turno</Typography>
+              <Chip label={battleInfo.turn} color="primary" />
+            </Box>
+          )}
+          <Button
+            disabled={battleInfo.inBattle}
+            onClick={handleBattleStart}
+            variant="contained"
+          >
+            Start Battle
+          </Button>
+        </Box>
+        <Grid minWidth={420} size={5}>
+          <PokeCard
+            withHistory={pokemons.defender.id}
+            pokemon={pokemons.defender}
+            statsMode
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default PokeFight;

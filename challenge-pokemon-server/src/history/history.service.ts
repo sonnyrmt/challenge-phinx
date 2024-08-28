@@ -14,4 +14,11 @@ export class HistoryService {
       relations: ['pokemonOne', 'pokemonTwo'],
     });
   }
+
+  getHistoryById(id: number) {
+    return this.historyRepository.find({
+      where: [{ pokemonOne: { id } }, { pokemonTwo: { id } }],
+      relations: ['pokemonOne', 'pokemonTwo'],
+    });
+  }
 }
