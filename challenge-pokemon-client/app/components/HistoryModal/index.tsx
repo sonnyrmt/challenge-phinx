@@ -90,12 +90,25 @@ const History = ({
                     <Avatar alt="Remy Sharp" src={selected.imageUrl} />
                     <Typography fontSize={12}>{selected.name}</Typography>
                   </Box>
-                  <Typography fontWeight={600}>VS</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      minWidth: "70px",
+                    }}
+                  >
+                    <Typography fontWeight={600}>VS</Typography>
+                    <Typography fontSize={12} fontWeight={500}>
+                      {new Date(battle.date).toLocaleDateString()}
+                    </Typography>
+                  </Box>
                   <Box
                     sx={{
                       alignItems: "end",
                       display: "flex",
                       flexDirection: "column",
+                      minWidth: "70px",
                     }}
                   >
                     <Avatar alt="Remy Sharp" src={opponent.imageUrl} />

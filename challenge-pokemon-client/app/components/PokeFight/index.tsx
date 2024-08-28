@@ -6,6 +6,7 @@ import { Button, Chip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { api } from "@/app/services/api";
 import getRandomPokemons from "@/app/helpers/getRandomPokemons";
+import CardSkeleton from "../CardSkeleton";
 
 interface Props {
   firstPosition: IPokemon;
@@ -102,7 +103,14 @@ const PokeFight = ({
   };
 
   if (isLoading || !pokemons.attacker || !pokemons.defender)
-    return <>Cargando...</>;
+    return (
+      <Box>
+        <CardSkeleton width={"100%"} height={46} />
+        <Box sx={{ mt: 3 }}>
+          <CardSkeleton width={"100%"} height={469} />
+        </Box>
+      </Box>
+    );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -129,35 +137,37 @@ const PokeFight = ({
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <Grid minWidth={420} size={5}>
+        <Grid size={{ xs: 12, lg: 5 }}>
           <PokeCard
             withHistory={pokemons.attacker.id}
             pokemon={pokemons.attacker}
             statsMode
           />
         </Grid>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {battleInfo.inBattle && (
-            <Box sx={{ mb: 2 }}>
-              <Typography>Turno</Typography>
-              <Chip label={battleInfo.turn} color="primary" />
-            </Box>
-          )}
-          <Button
-            disabled={battleInfo.inBattle}
-            onClick={handleBattleStart}
-            variant="contained"
+        <Grid>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            Start Battle
-          </Button>
-        </Box>
-        <Grid minWidth={420} size={5}>
+            {battleInfo.inBattle && (
+              <Box sx={{ mb: 2 }}>
+                <Typography>Turno</Typography>
+                <Chip label={battleInfo.turn} color="primary" />
+              </Box>
+            )}
+            <Button
+              disabled={battleInfo.inBattle}
+              onClick={handleBattleStart}
+              variant="contained"
+            >
+              Start Battle
+            </Button>
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, lg: 5 }}>
           <PokeCard
             withHistory={pokemons.defender.id}
             pokemon={pokemons.defender}

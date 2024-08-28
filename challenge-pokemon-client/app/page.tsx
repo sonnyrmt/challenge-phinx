@@ -10,6 +10,7 @@ import IPokemon from "./interfaces/pokemon.interface";
 import PokeCard from "./components/PokeCard";
 import getRandomPokemons from "./helpers/getRandomPokemons";
 import PokeFight from "./components/PokeFight";
+import CardSkeleton from "./components/CardSkeleton";
 
 export default function Home() {
   const [pokemons, setPokemons] = useState<IPokemon[]>([]);
@@ -47,15 +48,16 @@ export default function Home() {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             {isLoading ? (
-              <p>Cargando...</p>
+              <CardSkeleton length={5} width={200} height={184} />
             ) : (
               pokemons.map((pokemon: IPokemon, idx) => (
-                <PokeCard
-                  key={idx}
-                  pokemon={pokemon}
-                  select={setSelectedPokemon}
-                  isActionable
-                />
+                <Grid key={pokemon.id} size={{ xs: 6, md: "auto" }}>
+                  <PokeCard
+                    pokemon={pokemon}
+                    select={setSelectedPokemon}
+                    isActionable
+                  />
+                </Grid>
               ))
             )}
           </Grid>
@@ -72,5 +74,3 @@ export default function Home() {
     </Container>
   );
 }
-
-//  setInterval
