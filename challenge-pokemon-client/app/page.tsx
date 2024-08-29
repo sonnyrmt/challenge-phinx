@@ -11,12 +11,14 @@ import PokeCard from "./components/PokeCard";
 import getRandomPokemons from "./helpers/getRandomPokemons";
 import PokeFight from "./components/PokeFight";
 import CardSkeleton from "./components/CardSkeleton";
+import Alert from "./components/Alert/Alert";
 
 export default function Home() {
   const [pokemons, setPokemons] = useState<IPokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPokemon, setSelectedPokemon] = useState<IPokemon>();
   const [error, setError] = useState(false);
+  const [inBattle, setInBattle] = useState(false);
 
   useEffect(() => {
     const getAllPokemons = async (): Promise<void> => {
@@ -38,6 +40,11 @@ export default function Home() {
 
   return (
     <Container maxWidth="lg">
+      <Alert
+        message="Error Fetching Pokemons"
+        open={error}
+        setOpen={setError}
+      />
       <Box sx={{ minHeight: "100vh", p: 5 }}>
         <Typography mb={2} fontSize={30}>
           Pokemon Battle
@@ -50,12 +57,13 @@ export default function Home() {
             {isLoading ? (
               <CardSkeleton length={5} width={200} height={184} />
             ) : (
-              pokemons.map((pokemon: IPokemon, idx) => (
-                <Grid key={pokemon.id} size={{ xs: 6, md: "auto" }}>
+              pokemons.map((pokemon: IPokemon) => (
+                <Grid key={pokemon.pokemonId} size={{ xs: 6, md: "auto" }}>
                   <PokeCard
                     pokemon={pokemon}
                     select={setSelectedPokemon}
                     isActionable
+                    inBattle={inBattle}
                   />
                 </Grid>
               ))
@@ -68,6 +76,9 @@ export default function Home() {
             secondPosition={fighters.defender}
             isLoading={isLoading}
             allPokemons={pokemons}
+            setSelected={setSelectedPokemon}
+            inBattle={inBattle}
+            setInBattle={setInBattle}
           />
         </Box>
       </Box>

@@ -19,6 +19,7 @@ interface Props {
   isActionable?: boolean;
   statsMode?: boolean;
   withHistory?: number;
+  inBattle?: boolean;
 }
 
 const historyInitialState = {
@@ -32,11 +33,14 @@ const PokeCard = ({
   isActionable,
   statsMode,
   withHistory,
+  inBattle,
 }: Props) => {
   const [history, setHistory] = useState(historyInitialState);
 
   const handlePokemonSelect = () => {
-    if (select) select(pokemon);
+    if (select) {
+      select(pokemon);
+    }
   };
 
   const getCardContent = () => {
@@ -63,6 +67,7 @@ const PokeCard = ({
             objectFit: "contain",
             height: 120,
             pointerEvents: "none",
+            filter: inBattle ? "grayscale(1)" : null,
           }}
           image={pokemon.imageUrl}
           title={pokemon.name}
@@ -75,7 +80,9 @@ const PokeCard = ({
 
     if (isActionable) {
       content = (
-        <CardActionArea onClick={handlePokemonSelect}>{content}</CardActionArea>
+        <CardActionArea disabled={inBattle} onClick={handlePokemonSelect}>
+          {content}
+        </CardActionArea>
       );
     }
 

@@ -13,4 +13,5 @@ export interface IPokemon {
   speed: number;
   type: string;
   imageUrl?: string;
+  maxHp?: number;
 }

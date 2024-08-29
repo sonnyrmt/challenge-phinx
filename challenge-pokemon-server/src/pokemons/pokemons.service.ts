@@ -28,8 +28,8 @@ export class PokemonsService {
     while (attacker.hp > 0 && defender.hp > 0) {
       const damage = calculateDamage(attacker.attack, defender.defense);
 
-      const attackerClone = { ...attacker, maxHp: pokemonOne.hp };
-      const defenderClone = { ...defender, maxHp: pokemonTwo.hp };
+      const attackerClone = { ...attacker };
+      const defenderClone = { ...defender };
 
       defenderClone.hp -= damage;
 

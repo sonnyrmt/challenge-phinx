@@ -3,16 +3,20 @@ import PokeCard from "../PokeCard";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { Button, Chip, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { api } from "@/app/services/api";
 import getRandomPokemons from "@/app/helpers/getRandomPokemons";
 import CardSkeleton from "../CardSkeleton";
+import Alert from "../Alert/Alert";
 
 interface Props {
   firstPosition: IPokemon;
   secondPosition: IPokemon;
   isLoading: boolean;
   allPokemons: IPokemon[];
+  setSelected: any;
+  inBattle: boolean;
+  setInBattle: Dispatch<SetStateAction<boolean>>;
 }
 
 interface SimulationStep {
@@ -40,17 +44,19 @@ const PokeFight = ({
   secondPosition,
   isLoading,
   allPokemons,
+  setSelected,
+  inBattle,
+  setInBattle,
 }: Props): any => {
   const [battleInfo, setBattleInfo] = useState<BattleInfo>({
-    inBattle: false,
     turn: 1,
     winner: undefined,
   });
-
   const [pokemons, setPokemons] = useState<PokemonState>({
     attacker: null,
     defender: null,
   });
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!isLoading) {
@@ -63,6 +69,8 @@ const PokeFight = ({
 
   const handleBattleStart = async () => {
     try {
+      if (error) setError(false);
+
       const { data }: { data: BattleResponse } = await api.post("/pokemons", {
         pokemonOne: pokemons.attacker,
         pokemonTwo: pokemons.defender,
@@ -70,6 +78,7 @@ const PokeFight = ({
 
       let battleIndex = 0;
 
+      setInBattle(true);
       const interval = setInterval(() => {
         if (battleIndex < data.simulation.length) {
           if (pokemons.attacker && pokemons.defender) {
@@ -83,7 +92,6 @@ const PokeFight = ({
             }));
 
             setBattleInfo({
-              inBattle: true,
               turn: battleIndex + 1,
             });
 
@@ -92,14 +100,18 @@ const PokeFight = ({
         } else {
           clearInterval(interval);
           setBattleInfo({
-            inBattle: false,
             turn: 1,
             winner: data.winner,
           });
-          setPokemons(getRandomPokemons(allPokemons));
+          setInBattle(false);
+          const fighters = getRandomPokemons(allPokemons);
+          setSelected(fighters.attacker);
+          setPokemons(fighters);
         }
       }, 1200);
-    } catch (error) {}
+    } catch (error) {
+      setError(true);
+    }
   };
 
   if (isLoading || !pokemons.attacker || !pokemons.defender)
@@ -114,6 +126,7 @@ const PokeFight = ({
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <Alert message="Error Fetching Battle" open={error} setOpen={setError} />
       <Box
         width={"100%"}
         sx={{
@@ -159,7 +172,7 @@ const PokeFight = ({
               </Box>
             )}
             <Button
-              disabled={battleInfo.inBattle}
+              disabled={inBattle}
               onClick={handleBattleStart}
               variant="contained"
             >
