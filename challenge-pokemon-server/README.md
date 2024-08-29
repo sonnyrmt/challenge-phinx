@@ -2,14 +2,16 @@
 
 En caso de querer ejecutar la migración personalizada
 
-1 - Levantar el proyecto
+1 - Borrar database.sqlite
+
+2 - Levantar el proyecto
 
 ```bash
   npm i
   npm start
 ```
 
-2 - Una vez verificado que no hay errores
+3 - Una vez verificado que no hay errores
 
 ```bash
   npm run migration:run
