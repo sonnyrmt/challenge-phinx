@@ -7,7 +7,7 @@
       "defense": 3,
       "hp": 3,
       "speed": 6,
-      "type": "Type",
+      "type": "electric",
       "imageUrl": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/025.png"
     },
     {
@@ -17,7 +17,7 @@
       "defense": 3,
       "hp": 3,
       "speed": 4,
-      "type": "Type",
+      "type": "fire",
       "imageUrl": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/004.png"
     },
     {
@@ -27,7 +27,7 @@
       "defense": 4,
       "hp": 3,
       "speed": 3,
-      "type": "Type",
+      "type": "water",
       "imageUrl": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/007.png"
     },
     {
@@ -37,7 +37,7 @@
       "defense": 3,
       "hp": 3,
       "speed": 3,
-      "type": "Type",
+      "type": "grass",
       "imageUrl": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/001.png"
     },
     {
@@ -47,7 +47,7 @@
       "defense": 3,
       "hp": 4,
       "speed": 5,
-      "type": "Type",
+      "type": "normal",
       "imageUrl": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/133.png"
     }
   ]

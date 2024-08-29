@@ -9,4 +9,5 @@ export default interface IPokemon {
   type: string;
   imageUrl: string;
   maxHp?: number;
+  damage?: number;
 }
