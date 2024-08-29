@@ -1,53 +1,28 @@
-import IPokemon from "@/app/interfaces/pokemon.interface";
 import PokeCard from "../PokeCard";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { Button, Chip, Typography } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/app/services/api";
 import getRandomPokemons from "@/app/helpers/getRandomPokemons";
 import CardSkeleton from "../CardSkeleton";
 import Alert from "../Alert/Alert";
-
-interface Props {
-  firstPosition: IPokemon;
-  secondPosition: IPokemon;
-  isLoading: boolean;
-  allPokemons: IPokemon[];
-  setSelected: any;
-  inBattle: boolean;
-  setInBattle: Dispatch<SetStateAction<boolean>>;
-}
-
-interface SimulationStep {
-  [key: string]: IPokemon;
-}
-
-interface BattleResponse {
-  simulation: SimulationStep[];
-  winner: IPokemon;
-}
-
-interface PokemonState {
-  attacker: IPokemon | null;
-  defender: IPokemon | null;
-}
-
-interface BattleInfo {
-  inBattle?: boolean;
-  turn?: number;
-  winner?: IPokemon;
-}
+import {
+  BattleInfo,
+  BattleResponse,
+  PokemonState,
+  Props,
+} from "./fight.interface";
 
 const PokeFight = ({
   firstPosition,
   secondPosition,
   isLoading,
   allPokemons,
-  setSelected,
   inBattle,
   setInBattle,
 }: Props): any => {
+  const [error, setError] = useState(false);
   const [battleInfo, setBattleInfo] = useState<BattleInfo>({
     turn: 1,
     winner: undefined,
@@ -56,13 +31,12 @@ const PokeFight = ({
     attacker: null,
     defender: null,
   });
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!isLoading) {
       setPokemons({
         attacker: firstPosition,
-        defender: secondPosition,
+        defender: pokemons.defender || secondPosition,
       });
     }
   }, [isLoading, firstPosition]);
@@ -70,21 +44,27 @@ const PokeFight = ({
   const handleBattleStart = async () => {
     try {
       if (error) setError(false);
+      const fighters = getRandomPokemons(allPokemons, firstPosition);
+
+      setPokemons(() => ({
+        attacker: fighters.attacker,
+        defender: fighters.defender,
+      }));
 
       const { data }: { data: BattleResponse } = await api.post("/pokemons", {
-        pokemonOne: pokemons.attacker,
-        pokemonTwo: pokemons.defender,
+        pokemonOne: fighters.attacker,
+        pokemonTwo: fighters.defender,
       });
 
       let battleIndex = 0;
-
       setInBattle(true);
+
       const interval = setInterval(() => {
         if (battleIndex < data.simulation.length) {
           if (pokemons.attacker && pokemons.defender) {
             const currentBattle = data.simulation[battleIndex];
-            const updatedAttacker = currentBattle[pokemons.attacker.id];
-            const updatedDefender = currentBattle[pokemons.defender.id];
+            const updatedAttacker = currentBattle[fighters.attacker.id];
+            const updatedDefender = currentBattle[fighters.defender.id];
 
             setPokemons(() => ({
               attacker: updatedAttacker,
@@ -99,14 +79,11 @@ const PokeFight = ({
           }
         } else {
           clearInterval(interval);
+          setInBattle(false);
           setBattleInfo({
             turn: 1,
             winner: data.winner,
           });
-          setInBattle(false);
-          const fighters = getRandomPokemons(allPokemons);
-          setSelected(fighters.attacker);
-          setPokemons(fighters);
         }
       }, 1200);
     } catch (error) {
@@ -165,7 +142,7 @@ const PokeFight = ({
               alignItems: "center",
             }}
           >
-            {battleInfo.inBattle && (
+            {inBattle && (
               <Box sx={{ mb: 2 }}>
                 <Typography>Turno</Typography>
                 <Chip label={battleInfo.turn} color="primary" />

@@ -12,20 +12,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import HistoryIcon from "@mui/icons-material/History";
 import History from "../HistoryModal";
-
-interface Props {
-  pokemon: IPokemon;
-  select?: Dispatch<SetStateAction<IPokemon | undefined>>;
-  isActionable?: boolean;
-  statsMode?: boolean;
-  withHistory?: number;
-  inBattle?: boolean;
-}
-
-const historyInitialState = {
-  id: 0,
-  open: false,
-};
+import { historyInitialState, Props } from "./card.interface";
 
 const PokeCard = ({
   pokemon,

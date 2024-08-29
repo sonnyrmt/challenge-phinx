@@ -36,8 +36,6 @@ export default function Home() {
     getAllPokemons();
   }, []);
 
-  const fighters = getRandomPokemons(pokemons, selectedPokemon);
-
   return (
     <Container maxWidth="lg">
       <Alert
@@ -72,11 +70,10 @@ export default function Home() {
         </Box>
         <Box mt={3}>
           <PokeFight
-            firstPosition={selectedPokemon || fighters.attacker}
-            secondPosition={fighters.defender}
+            firstPosition={selectedPokemon || pokemons[0]}
+            secondPosition={pokemons[1]}
             isLoading={isLoading}
             allPokemons={pokemons}
-            setSelected={setSelectedPokemon}
             inBattle={inBattle}
             setInBattle={setInBattle}
           />

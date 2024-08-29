@@ -71,7 +71,7 @@ const History = ({
           </Box>
           <Box sx={{ width: "100%", maxHeight: 400, overflow: "auto", px: 1 }}>
             {data?.length ? (
-              data?.map((battle) => {
+              data?.map((battle, idx) => {
                 const color = id === battle.winner ? "#53e86c" : "#e85353";
 
                 const [selected, opponent] =
@@ -81,6 +81,7 @@ const History = ({
 
                 return (
                   <Box
+                    key={idx}
                     sx={{
                       p: 1,
                       boxShadow: 3,

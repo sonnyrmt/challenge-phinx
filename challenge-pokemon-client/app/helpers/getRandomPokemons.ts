@@ -7,7 +7,8 @@ interface ISelectedPokemons {
 
 const getRandomPokemons = (
   pokemons: IPokemon[],
-  selected?: IPokemon
+  selected?: IPokemon,
+  initial?: boolean
 ): ISelectedPokemons => {
   let shuffledPokemons = [...pokemons].sort(() => Math.random() - 0.5);
 
