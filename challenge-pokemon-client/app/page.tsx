@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { api } from "./services/api";
 import IPokemon from "./interfaces/pokemon.interface";
 import PokeCard from "./components/PokeCard";
-import getRandomPokemons from "./helpers/getRandomPokemons";
 import PokeFight from "./components/PokeFight";
 import CardSkeleton from "./components/CardSkeleton";
 import Alert from "./components/Alert/Alert";

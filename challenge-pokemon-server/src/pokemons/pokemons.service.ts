@@ -20,17 +20,13 @@ export class PokemonsService {
 
   async battle({ pokemonOne, pokemonTwo }: IBattleRequest) {
     const simulation = [];
-
     let [attacker, defender] = calculateFirstFighter(pokemonOne, pokemonTwo);
-
     let turn = 1;
 
     while (attacker.hp > 0 && defender.hp > 0) {
       const damage = calculateDamage(attacker, defender);
-
       const attackerClone = { ...attacker };
       const defenderClone = { ...defender };
-
       defenderClone.hp -= damage;
 
       const turnData = {
