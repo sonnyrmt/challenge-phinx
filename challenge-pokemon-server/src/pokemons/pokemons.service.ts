@@ -26,7 +26,7 @@ export class PokemonsService {
     let turn = 1;
 
     while (attacker.hp > 0 && defender.hp > 0) {
-      const damage = calculateDamage(attacker.attack, defender.defense);
+      const damage = calculateDamage(attacker, defender);
 
       const attackerClone = { ...attacker };
       const defenderClone = { ...defender };
@@ -35,7 +35,7 @@ export class PokemonsService {
 
       const turnData = {
         [attacker.id]: attackerClone,
-        [defender.id]: defenderClone,
+        [defender.id]: { ...defenderClone, damage },
         turn,
       };
 

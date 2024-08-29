@@ -7,12 +7,13 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { Dispatch, SetStateAction, useState } from "react";
 import ProgressBar from "../ProgressBar";
-import { MAX_VALUES } from "@/app/helpers/constants";
+import { MAX_VALUES, TYPE_ICON } from "@/app/helpers/constants";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import HistoryIcon from "@mui/icons-material/History";
 import History from "../HistoryModal";
 import { historyInitialState, Props } from "./card.interface";
+import Image from "next/image";
 
 const PokeCard = ({
   pokemon,
@@ -31,10 +32,30 @@ const PokeCard = ({
   };
 
   const getCardContent = () => {
+    const hit = pokemon?.damage ? "hit" : undefined;
     let content = (
       <CardContent sx={{ px: 5, position: "relative" }}>
         {withHistory && (
           <>
+            <Box
+              sx={{
+                position: "absolute",
+                left: 20,
+                top: -10,
+                background: TYPE_ICON[pokemon.type].color,
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: "10px",
+                p: 1,
+              }}
+            >
+              <Image
+                width={20}
+                height={20}
+                src={TYPE_ICON[pokemon.type].url}
+                alt="pokemon-type"
+              />
+            </Box>
             <IconButton
               onClick={() => setHistory({ id: withHistory, open: true })}
               sx={{ position: "absolute", right: 20, top: -10 }}
@@ -48,17 +69,38 @@ const PokeCard = ({
             />
           </>
         )}
-        <CardMedia
-          component="img"
-          sx={{
-            objectFit: "contain",
-            height: 120,
-            pointerEvents: "none",
-            filter: inBattle ? "grayscale(1)" : null,
-          }}
-          image={pokemon.imageUrl}
-          title={pokemon.name}
-        />
+        <Box sx={{ position: "relative" }}>
+          <CardMedia
+            className={hit}
+            component="img"
+            sx={{
+              objectFit: "contain",
+              height: 120,
+              pointerEvents: "none",
+              filter: inBattle ? "grayscale(1)" : null,
+            }}
+            image={pokemon.imageUrl}
+            title={pokemon.name}
+          />
+          {pokemon?.damage && (
+            <CardMedia
+              className={hit}
+              component="img"
+              sx={{
+                objectFit: "contain",
+                height: 120,
+                pointerEvents: "none",
+                top: 0,
+                position: "absolute",
+                opacity: "50%",
+                filter:
+                  "brightness(0) saturate(100%) invert(20%) sepia(78%) saturate(6462%) hue-rotate(356deg) brightness(104%) contrast(126%)",
+              }}
+              image={pokemon.imageUrl}
+              title={pokemon.name}
+            />
+          )}
+        </Box>
         <Typography mt={1} fontWeight={600} textAlign={"center"}>
           {pokemon.name}
         </Typography>
