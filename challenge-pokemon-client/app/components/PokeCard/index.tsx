@@ -32,6 +32,7 @@ const PokeCard = ({
   };
 
   const getCardContent = () => {
+    const hit = pokemon?.damage ? "hit" : undefined;
     let content = (
       <CardContent sx={{ px: 5, position: "relative" }}>
         {withHistory && (
@@ -70,7 +71,7 @@ const PokeCard = ({
         )}
         <Box sx={{ position: "relative" }}>
           <CardMedia
-            className={pokemon?.damage ? "hit" : undefined}
+            className={hit}
             component="img"
             sx={{
               objectFit: "contain",
@@ -83,7 +84,7 @@ const PokeCard = ({
           />
           {pokemon?.damage && (
             <CardMedia
-              className={pokemon?.damage ? "hit" : undefined}
+              className={hit}
               component="img"
               sx={{
                 objectFit: "contain",
