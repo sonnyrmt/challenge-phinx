@@ -11,3 +11,15 @@ export const TYPE_ICON: Record<string, { url: string; color: string }> = {
   grass: { url: "/20px-Grass_icon.png", color: "#3FA129" },
   normal: { url: "/20px-Normal_icon.png", color: "#5A5A5A" },
 };
+
+export const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  minWidth: 400,
+  bgcolor: "background.paper",
+  borderRadius: 1,
+  boxShadow: 24,
+  p: 2,
+};

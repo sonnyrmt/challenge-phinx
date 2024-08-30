@@ -13,6 +13,7 @@ import {
   PokemonState,
   Props,
 } from "./fight.interface";
+import TypesChart from "../TypesChart";
 
 const PokeFight = ({
   firstPosition,
@@ -148,13 +149,16 @@ const PokeFight = ({
                 <Chip label={battleInfo.turn} color="primary" />
               </Box>
             )}
+
             <Button
+              color="success"
               disabled={inBattle}
               onClick={handleBattleStart}
               variant="contained"
             >
               Start Battle
             </Button>
+            <TypesChart />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, lg: 5 }}>

@@ -8,6 +8,7 @@ import { api } from "@/app/services/api";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Alert from "../Alert/Alert";
+import { modalStyle } from "@/app/helpers/constants";
 
 interface IHistory {
   id: number;
@@ -16,18 +17,6 @@ interface IHistory {
   winner: number;
   date: Date;
 }
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  borderRadius: 1,
-  boxShadow: 24,
-  p: 2,
-};
 
 const History = ({
   id,
@@ -60,7 +49,7 @@ const History = ({
     <>
       <Alert message="Error Fetching History" open={error} setOpen={setError} />
       <Modal open={open} onClose={() => onClose()}>
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography mb={1} fontWeight={600} variant="h6" component="h2">
               Battle History
